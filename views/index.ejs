@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./CSS/stylem.css" class="stylechange">
+   <title>برنامج الجرد</title>
+</head>
+<body>
+  <div class="body">
+    <h1>0</h1>
+    <button onclick="getData()">إتصال</button>
+  </div>
+</body>
+<script src="./JS/script.js"></script>
+<script>
+  function getData() {
+    fetch("/data", {
+      method:"GET",
+      headers: {"Content-Type":"application/json"}
+    })
+    .then(response => response.json())
+    .then(datas => {
+      let x = 0
+      for(let i in datas){
+        if(datas[i].status == "online"){
+          x++
+        }
+      }
+      document.querySelector("h1").textContent = x
+    })
+  }
+</script>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/stylem.css" class="stylechange">
+    <title>Document</title>
+</head>
+<body>
+    <div class="body">
+    <h1>you are online</h1>
+    <h2></h2>
+    </div>
+</body>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    let ip = localStorage.getItem("IP")
+    if(!ip) {
+      ip = generateIP()
+      localStorage.setItem("IP",ip)
+      console.log("New IP is : " + ip)
+      let DataJson = {
+        [ip]:{
+          status:"online"
+        }
+      }
+      fetch(`/data/${ip}`,{
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(DataJson)
+      })
+      .then(response => response.json())
+      .then(datas => {
+        console.log("done man")
+      })
+    } else {
+      console.log("Your IP : " + ip)
+      document.querySelector("h2").textContent = `Your IP is : ${ip}`
+    }
+    updateStatus("online")
+
+    window.addEventListener("beforeunload",() => updateStatus("offline"))
+    window.addEventListener("load", () => updateStatus("online"))
+  })
+
+  function generateIP() {
+    let number = Math.floor(Math.random() * (150 - 50 + 1) + 50) + "." + Math.floor(Math.random() * (150 - 50 + 1) + 50) + "." + Math.floor(Math.random() * (150 - 50 + 1) + 50)
+    return number
+  }
+function updateStatus(status) {
+  const ip = localStorage.getItem("IP")
+  if(!ip) return
+  const data = { status }
+  fetch(`/data/${ip}`, {
+    method: "PUT",
+    headers: {"Content-Type" : "application/json"},
+    body: JSON.stringify({ [ip]:data })
+  })
+}
+
+  // if (localStorage.getItem("IP") !== null) {
+  //   console.log(`your ip is ${localStorage.getItem("IP")}`)
+  
+  // }
+  // else {
+  //     let number = Math.floor(Math.random() * (150 - 50 + 1) + 50) + "." + Math.floor(Math.random() * (150 - 50 + 1) + 50) + "." + Math.floor(Math.random() * (150 - 50 + 1) + 50)
+  //     localStorage.setItem("IP",number)
+  //     console.log("your new ip is" + localStorage.getItem("IP"))
+  //     fetch(`/data/${number}`,{
+  //       method:"POST",
+  //       headers: {"Content-Type":"application/json"},
+  //       body: {[`${number}`]: {status:"online"}}})
+  //     .then(response => response.json())
+  //     .then(datas => console.log("done"))
+  //     }
+  // localStorage.setItem("Site Status","true")
+  // window.onbeforeunload = () => {
+  //   localStorage.setItem("Site Status","false")
+  //   let ip = localStorage.getItem("IP")
+  //   let status = localStorage.getItem("Site Status")
+  //   let data = {status:`offline`}
+  //   let Save = {[ip]:data}
+  //   fetch(`/data/${ip}`,{
+  //       method:'PUT',
+  //       headers:{'Content-Type':'application/json'},
+  //       body: JSON.stringify(Save)})
+  //   .then(response => response.json())
+  //   .then(datas => console.log('done'))}
+  // window.onload = () => {
+  //   if(localStorage.getItem("IP")){
+  //   localStorage.setItem("Site Status","true")
+  //   let ip = localStorage.getItem("IP")
+  //   let status = localStorage.getItem("Site Status")
+  //   let data = {status:`online`}
+  //   let Save = {[ip]:data}
+  //   fetch(`/data/`+ip,{
+  //       method:'PUT',
+  //       headers:{'Content-Type':'application/json'},
+  //       body: JSON.stringify(Save)})
+  //   .then(response => response.json())
+  //   .then(datas => console.log('done'))}}
+</script>
+</html>
